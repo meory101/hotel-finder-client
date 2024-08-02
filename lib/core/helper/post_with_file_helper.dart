@@ -19,7 +19,6 @@ postWithFile(String url, Map data, File file) async {
   });
   http.StreamedResponse sresponce = await multipartrequest.send();
   http.Response response = await http.Response.fromStream(sresponce);
-  print(jsonDecode(response.body));
   return response;
 }
 }

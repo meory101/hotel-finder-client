@@ -57,7 +57,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
       "password": password.text,
     });
     var body = jsonDecode(response.body);
-    print(response.body);
     if (response.statusCode == 200) {
       AppSharedPreferences.cashUserName(username: body['user data']['name']);
       AppSharedPreferences.cashUserid(id: body['user data']['id'].toString());

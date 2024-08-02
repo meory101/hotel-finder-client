@@ -5,6 +5,7 @@ String imageUrl = 'http://192.168.159.164:8000/storage/';
 
 class ApiGetUrl {
   static  String getMostPopularRooms = '${_baseUrl}getMostPopularRooms';
+  static  String getUserReservations = '${_baseUrl}getUserReservations/${AppSharedPreferences.getUserId()}';
   static  String getRooms = '${_baseUrl}getRooms';
   static  String getUserProfile = '${_baseUrl}getUserProfile/${AppSharedPreferences.getUserId()}';
 
@@ -14,6 +15,7 @@ class ApiPostUrl {
 static  String register = '${_baseUrl}userRegister';
 static  String login = '${_baseUrl}userLogin';
 static  String updateUserProfile = '${_baseUrl}updateUserProfile';
+static  String reserveRoom = '${_baseUrl}reserveRoom';
 }
 
 class ApiDeleteUrl {}

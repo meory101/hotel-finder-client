@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hotel_finder_client/feature/auth/screen/login_screen.dart';
+import 'package:hotel_finder_client/feature/bookings/screen/booked_rooms_screen.dart';
 import 'package:hotel_finder_client/feature/home/screen/home_screen.dart';
 import 'package:hotel_finder_client/feature/profile/screen/profile_screen.dart';
 
@@ -23,7 +24,7 @@ class _MainAppBottomAppBarState extends State<MainAppBottomAppBar> {
   final List<Widget> bottomBarScreens = [
     const HomeScreen(),
     const HomeScreen(),
-    const HomeScreen(),
+    const BookedRoomsScreen(),
     const ProfileScreen(),
 
   ];
