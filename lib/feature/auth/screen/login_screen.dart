@@ -47,14 +47,16 @@ class _LoginScreenState extends State<LoginScreen> {
         ],
       )),
     );
+    print(email.text);
     http.Response response = await HttpMethods().postMethod(ApiPostUrl.login, {
       "email": email.text,
       "password": password.text,
     });
     var body = jsonDecode(response.body);
     if (response.statusCode == 200) {
-      AppSharedPreferences.cashUserName(username: body['use data']['name']);
-      AppSharedPreferences.cashUserid(id: body['use data']['id'].toString());
+      print(body['user data']['id']);
+      AppSharedPreferences.cashUserName(username: body['user data']['name']);
+      AppSharedPreferences.cashUserid(id: body['user data']['id'].toString());
       AppSharedPreferences.cashUserToken(token: body['token']);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -74,7 +76,7 @@ class _LoginScreenState extends State<LoginScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: AppTextWidget(
-          text: body,
+          text: body.toString(),
           color: AppColorManager.white,
           fontSize: FontSizeManager.fs14,
           fontWeight: FontWeight.w700,
@@ -139,9 +141,14 @@ class _LoginScreenState extends State<LoginScreen> {
                       hint: "Email Address",
                       title: "Email Address",
                       onChanged: (value) {
+                        email.text =value??"";
                         return null;
                       },
                       validator: (value) {
+                        if(value?.isEmpty??true){
+                          return 'required';
+
+                        }
                         return null;
                       },
                     ),
@@ -152,9 +159,14 @@ class _LoginScreenState extends State<LoginScreen> {
                       hint: "Password",
                       title: "Password",
                       onChanged: (value) {
+                        password.text =value??"";
                         return null;
                       },
                       validator: (value) {
+                        if(value?.isEmpty??true){
+                          return 'required';
+
+                        }
                         return null;
                       },
                     ),

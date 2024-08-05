@@ -78,7 +78,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: AppTextWidget(
-          text: body,
+          text: body.toString(),
           color: AppColorManager.white,
           fontSize: FontSizeManager.fs14,
           fontWeight: FontWeight.w700,

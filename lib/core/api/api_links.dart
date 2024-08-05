@@ -7,7 +7,7 @@ class ApiGetUrl {
   static  String getMostPopularRooms = '${_baseUrl}getMostPopularRooms';
   static  String getUserReservations = '${_baseUrl}getUserReservations/${AppSharedPreferences.getUserId()}';
   static  String getRooms = '${_baseUrl}getRooms';
-  static  String getUserProfile = '${_baseUrl}getUserProfile/${AppSharedPreferences.getUserId()}';
+  static  String getUserProfile = '${_baseUrl}getUserProfile/';
 
 }
 

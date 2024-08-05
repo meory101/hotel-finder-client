@@ -7,6 +7,7 @@ import 'package:flutter/widgets.dart';
 import 'package:hotel_finder_client/core/helper/post_with_file_helper.dart';
 import 'package:hotel_finder_client/core/storage/shared/shared_pref.dart';
 import 'package:hotel_finder_client/core/widget/image/main_image_widget.dart';
+import 'package:hotel_finder_client/router/router.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../core/api/api_links.dart';
 import '../../../core/api/api_methods.dart';
@@ -18,7 +19,9 @@ import '../../../core/widget/drop_down/NameAndId.dart';
 import '../../../core/widget/form_field/title_app_form_filed.dart';
 import '../../../core/widget/text/app_text_widget.dart';
 import 'package:http/http.dart' as http;
+
 File? image;
+
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
@@ -34,7 +37,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String? gender;
   String? number;
 
-
   @override
   void initState() {
     getProfile();
@@ -46,7 +48,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       status = 0;
     });
     http.Response response =
-    await HttpMethods().getMethod(ApiGetUrl.getUserProfile);
+        await HttpMethods().getMethod('${ApiGetUrl.getUserProfile}${AppSharedPreferences.getUserId()}');
 
     if (response.statusCode == 200) {
       setState(() {
@@ -59,7 +61,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       setState(() {
         status = 2;
       });
-
     }
     setState(() {});
   }
@@ -68,6 +69,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     setState(() {
       status = 0;
     });
+    print(gender);
+    print(number);
     var data = {
       'name': name ?? "",
       'gender': gender ?? "",
@@ -76,7 +79,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
     };
 
     http.Response response =
-    await HttpMethods().postMethod(ApiPostUrl.updateUserProfile, data);
+        await HttpMethods().postMethod(ApiPostUrl.updateUserProfile, data);
+    print(response.body);
+    print(response.statusCode);
+    print(jsonDecode(response.body));
+
     if (response.statusCode == 200) {
       setState(() {
         status = 1;
@@ -90,7 +97,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     setState(() {});
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -185,78 +191,109 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         SizedBox(
                           height: AppHeightManager.h9,
                         ),
-                        Stack(
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Container(
-                              clipBehavior: Clip.antiAliasWithSaveLayer,
-                              height: AppWidthManager.w25,
-                              width: AppWidthManager.w25,
-                              decoration:
-                                  const BoxDecoration(shape: BoxShape.circle),
-                              child: image == null
-                                  ? const MainImageWidget(
-                                      imageUrl: '',
-                                    )
-                                  : Container(
-                                      clipBehavior: Clip.antiAliasWithSaveLayer,
-                                      alignment: Alignment.center,
-                                      height: AppHeightManager.h13,
-                                      width: AppHeightManager.h13,
-                                      decoration: BoxDecoration(
-                                        boxShadow: [
-                                          BoxShadow(
-                                              color: AppColorManager
-                                                  .greyWithOpacity6,
-                                              offset: const Offset(
-                                                -2,
-                                                2,
+                            Stack(
+                              children: [
+                                Container(
+                                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                                  height: AppWidthManager.w25,
+                                  width: AppWidthManager.w25,
+                                  decoration: const BoxDecoration(
+                                      shape: BoxShape.circle),
+                                  child: image == null
+                                      ? const MainImageWidget(
+                                          imageUrl: '',
+                                        )
+                                      : Container(
+                                          clipBehavior:
+                                              Clip.antiAliasWithSaveLayer,
+                                          alignment: Alignment.center,
+                                          height: AppHeightManager.h13,
+                                          width: AppHeightManager.h13,
+                                          decoration: BoxDecoration(
+                                            boxShadow: [
+                                              BoxShadow(
+                                                  color: AppColorManager
+                                                      .greyWithOpacity6,
+                                                  offset: const Offset(
+                                                    -2,
+                                                    2,
+                                                  ),
+                                                  blurRadius: 4,
+                                                  spreadRadius: 4)
+                                            ],
+                                            color: AppColorManager
+                                                .shimmerBaseColor,
+                                            shape: BoxShape.circle,
+                                            image: DecorationImage(
+                                              image: FileImage(
+                                                image ?? File(""),
                                               ),
-                                              blurRadius: 4,
-                                              spreadRadius: 4)
-                                        ],
-                                        color: AppColorManager.shimmerBaseColor,
-                                        shape: BoxShape.circle,
-                                        image: DecorationImage(
-                                          image: FileImage(
-                                            image ?? File(""),
+                                              fit: BoxFit.cover,
+                                            ),
                                           ),
-                                          fit: BoxFit.cover,
                                         ),
+                                ),
+                                Positioned(
+                                  bottom: AppHeightManager.h1point5,
+                                  left: AppWidthManager.w18,
+                                  right: 0,
+                                  child: InkWell(
+                                    onTap: () async {
+                                      final ImagePicker _picker = ImagePicker();
+
+                                      final XFile? img =
+                                          await _picker.pickImage(
+                                        source: ImageSource.gallery,
+                                        maxHeight: 512,
+                                        maxWidth: 512,
+                                        imageQuality: 75,
+                                      );
+                                      image = File(img?.path ?? "");
+                                      setState(() {});
+                                    },
+                                    child: Container(
+                                      height: 30,
+                                      width: 30,
+                                      padding:
+                                          EdgeInsets.all(AppWidthManager.w1),
+                                      decoration: const BoxDecoration(
+                                          color: AppColorManager.textAppColor,
+                                          shape: BoxShape.circle),
+                                      child: Icon(
+                                        Icons.edit,
+                                        color: AppColorManager.white,
+                                        size: 10,
                                       ),
                                     ),
-                            ),
-                            Positioned(
-                              bottom: AppHeightManager.h1point5,
-                              left: AppWidthManager.w18,
-                              right: 0,
-                              child: InkWell(
-                                onTap: () async {
-                                  final ImagePicker _picker = ImagePicker();
-
-                                  final XFile? img = await _picker.pickImage(
-                                    source: ImageSource.gallery,
-                                    maxHeight: 512,
-                                    maxWidth: 512,
-                                    imageQuality: 75,
-                                  );
-                                  image = File(img?.path ?? "");
-                                  setState(() {});
-                                },
-                                child: Container(
-                                  height: 30,
-                                  width: 30,
-                                  padding: EdgeInsets.all(AppWidthManager.w1),
-                                  decoration: const BoxDecoration(
-                                      color: AppColorManager.textAppColor,
-                                      shape: BoxShape.circle),
-                                  child: Icon(
-                                    Icons.edit,
-                                    color: AppColorManager.white,
-                                    size: 10,
                                   ),
+                                )
+                              ],
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                bottom: AppHeightManager.h4,
+                              ),
+                              child: MainAppButton(
+                                onTap: () {
+                                  AppSharedPreferences.clear();
+                                  Navigator.of(context).pushNamedAndRemoveUntil(
+                                      RouteNamedScreens.login,
+                                      (route) => false);
+                                },
+                                color: AppColorManager.blackShadow,
+                                height: AppWidthManager.w8,
+                                width: AppWidthManager.w8,
+                                child:  const Icon(
+                                    Icons.logout,
+                                    size: 15,
+                                    color: AppColorManager.white,
+
                                 ),
                               ),
-                            )
+                            ),
                           ],
                         ),
                         SizedBox(
@@ -297,7 +334,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     height: AppHeightManager.h1point5,
                                   ),
                                   MainDropdownWidget(
-                                    hint: profileData['gender'] ?? "gender",
+                                    hint: profileData['gender'] ??
+                                             "gender",
                                     options: const [
                                       NameAndId(name: 'male', id: "0"),
                                       NameAndId(name: 'female', id: "1"),

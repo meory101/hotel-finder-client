@@ -283,7 +283,7 @@ class _RoomDetailsState extends State<RoomDetails> {
                     children: List.generate(
                         widget.args.roomData['vnames'].length, (i) {
                       return MainAppButton(
-                        margin: EdgeInsets.only(right: AppWidthManager.w2),
+                        margin: EdgeInsets.only(right: AppWidthManager.w2,bottom: AppHeightManager.h1),
                         padding: EdgeInsets.symmetric(
                             horizontal: AppWidthManager.w3Point8,
                             vertical: AppHeightManager.h02),
@@ -328,7 +328,7 @@ class _RoomDetailsState extends State<RoomDetails> {
                     children: List.generate(
                         widget.args.roomData['tnames'].length, (i) {
                       return MainAppButton(
-                        margin: EdgeInsets.only(right: AppWidthManager.w2),
+                        margin: EdgeInsets.only(right: AppWidthManager.w2,bottom: AppHeightManager.h1),
                         padding: EdgeInsets.symmetric(
                             horizontal: AppWidthManager.w3Point8,
                             vertical: AppHeightManager.h02),
