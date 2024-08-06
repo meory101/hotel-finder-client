@@ -393,8 +393,8 @@ class _BookedRoomsScreenState extends State<BookedRoomsScreen> {
                                                   FlexStatusText(
                                                       color: AppColorManager
                                                           .green,
-                                                      text: reservations[index]['data']['type'] ==0
-                                                      ? 'waiting': reservations[index]['data']['type']==1? 'accepted': 'rejected'
+                                                      text: reservations[index]['data']['type'] =="0"
+                                                      ? 'waiting': reservations[index]['data']['type']=="1"? 'accepted': 'rejected'
                                                           )
                                                 ],
                                               ),

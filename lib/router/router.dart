@@ -4,6 +4,7 @@ import 'package:hotel_finder_client/feature/auth/screen/login_screen.dart';
 import 'package:hotel_finder_client/feature/home/screen/room_details.dart';
 import 'package:hotel_finder_client/feature/main/screen/main_bottom_app_bar_screen.dart';
 import 'package:hotel_finder_client/feature/map/screen/map_screen.dart';
+import 'package:hotel_finder_client/feature/search/screen/search_screen.dart';
 import '../core/navigation/fade_builder_route.dart';
 import '../core/widget/page/not_found_page.dart';
 import '../feature/auth/screen/register_screen.dart';
@@ -15,6 +16,7 @@ abstract class RouteNamedScreens {
   static const String bottomAppBar = "/bottom-app-bar";
   static const String roomDetails = "/room-details";
   static const String map = "/map";
+  static const String search = "/search";
 
 }
 
@@ -32,6 +34,8 @@ abstract class AppRouter {
       case RouteNamedScreens.roomDetails:
         argument as RoomDetailsArgs;
         return FadeBuilderRoute(page: RoomDetails(args: argument,));
+      case RouteNamedScreens.search:
+        return FadeBuilderRoute(page: const SearchScreen());
 
     }
     return FadeBuilderRoute(page: const NotFoundScreen());
