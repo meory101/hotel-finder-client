@@ -429,20 +429,94 @@ class _RoomDetailsState extends State<RoomDetails> {
                   ),
                   InkWell(
                     onTap: () {
-                      showDatePicker(
+                      DateTime selectedDate = DateTime(DateTime.now().year - 12);
+                      showModalBottomSheet(
                         context: context,
-                        firstDate: DateTime(1950),
-                        cancelText: 'cancel',
-                        confirmText: 'save',
-                        lastDate: DateTime.now(),
-                      ).then((value) {
-                        if (value == null) {
-                          dateTime = DateTime.now();
-                        } else {
-                          dateTime = value;
-                        }
-                        setState(() {});
-                      });
+                        backgroundColor: AppColorManager.white,
+                        builder: (BuildContext builder) {
+                          return Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(AppRadiusManager.r10),
+                              color: AppColorManager.white,
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Container(
+                                  alignment: Alignment.center,
+                                  height: AppHeightManager.h30,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(AppRadiusManager.r10),
+                                    color: AppColorManager.white,
+                                  ),
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(horizontal: AppWidthManager.w5),
+                                    child: CupertinoDatePicker(
+                                      // initialDateTime: DateTime.now(),
+                                      onDateTimeChanged: (DateTime? pickedDate) {
+                                        if (pickedDate != null) {
+                                          selectedDate = pickedDate;
+                                        }
+                                      },
+                                      itemExtent: AppHeightManager.h5,
+
+                                      mode: CupertinoDatePickerMode.date,
+                                      use24hFormat: true,
+                                      minimumDate: DateTime.now(),
+                                      // maximumDate: DateTime(2028),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: AppHeightManager.h2,
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    MainAppButton(
+                                      width: MediaQuery.of(context).size.width / 2.6,
+                                      borderRadius: BorderRadius.circular(AppRadiusManager.r10),
+                                      height: AppHeightManager.h5,
+                                      onTap: () {
+                                        Navigator.of(context).pop();
+
+                                      },
+                                      color: AppColorManager.blackShadow,
+                                      alignment: Alignment.center,
+                                      child: AppTextWidget(
+                                        text: "save",
+                                        fontSize: FontSizeManager.fs16,
+                                        color: AppColorManager.white,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: AppWidthManager.w2,
+                                    ),
+                                    MainAppButton(
+                                      width: MediaQuery.of(context).size.width / 2.6,
+                                      borderRadius: BorderRadius.circular(AppRadiusManager.r10),
+                                      height: AppHeightManager.h5,
+                                      onTap: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      color: AppColorManager.white,
+                                      alignment: Alignment.center,
+                                      child: AppTextWidget(
+                                        text: "cancel",
+                                        fontSize: FontSizeManager.fs16,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: AppHeightManager.h2,
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      );
                     },
                     child: Container(
                       alignment: LanguageHelper.checkIfLTR(context: context)

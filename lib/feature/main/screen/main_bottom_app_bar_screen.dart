@@ -11,6 +11,8 @@ import '../../../core/resource/color_manager.dart';
 import '../../../core/resource/icon_manager.dart';
 import '../../../core/resource/size_manager.dart';
 import '../../../core/widget/text/app_text_widget.dart';
+int selectedIndex
+ = 0;
 
 class MainAppBottomAppBar extends StatefulWidget {
   final BottomAppBarArgs? args;
@@ -29,16 +31,17 @@ class _MainAppBottomAppBarState extends State<MainAppBottomAppBar> {
     const ProfileScreen(),
   ];
 
-  int _selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      canPop: _selectedIndex == 0,
+      canPop: selectedIndex
+ == 0,
       onPopInvoked: (didPop) {
         if (didPop == false) {
           setState(() {
-            _selectedIndex = 0;
+            selectedIndex
+ = 0;
           });
         } else {
           Navigator.of(context).pop();
@@ -68,20 +71,23 @@ class _MainAppBottomAppBarState extends State<MainAppBottomAppBar> {
                         AppColorManager.transparent),
                     onTap: () {
                       setState(() {
-                        _selectedIndex = 0;
+                        selectedIndex
+ = 0;
                       });
                     },
                     child: Column(
                       children: [
                         SvgPicture.asset(AppIconManager.home,
                             colorFilter: ColorFilter.mode(
-                                _selectedIndex == 0
+                                selectedIndex
+ == 0
                                     ? AppColorManager.white
                                     : AppColorManager.grey,
                                 BlendMode.srcIn)),
                         AppTextWidget(
                           text: "home",
-                          color: _selectedIndex == 0
+                          color: selectedIndex
+ == 0
                               ? AppColorManager.white
                               : AppColorManager.grey,
                         ),
@@ -93,20 +99,23 @@ class _MainAppBottomAppBarState extends State<MainAppBottomAppBar> {
                         AppColorManager.transparent),
                     onTap: () {
                       setState(() {
-                        _selectedIndex = 1;
+                        selectedIndex
+ = 1;
                       });
                     },
                     child: Column(
                       children: [
                         SvgPicture.asset(AppIconManager.search,
                             colorFilter: ColorFilter.mode(
-                                _selectedIndex == 1
+                                selectedIndex
+ == 1
                                     ? AppColorManager.white
                                     : AppColorManager.grey,
                                 BlendMode.srcIn)),
                         AppTextWidget(
                           text: "Search",
-                          color: _selectedIndex == 1
+                          color: selectedIndex
+ == 1
                               ? AppColorManager.white
                               : AppColorManager.grey,
                         ),
@@ -118,20 +127,23 @@ class _MainAppBottomAppBarState extends State<MainAppBottomAppBar> {
                         AppColorManager.transparent),
                     onTap: () {
                       setState(() {
-                        _selectedIndex = 2;
+                        selectedIndex
+ = 2;
                       });
                     },
                     child: Column(
                       children: [
                         SvgPicture.asset(AppIconManager.draft,
                             colorFilter: ColorFilter.mode(
-                                _selectedIndex == 2
+                                selectedIndex
+ == 2
                                     ? AppColorManager.white
                                     : AppColorManager.grey,
                                 BlendMode.srcIn)),
                         AppTextWidget(
                           text: "Bookings",
-                          color: _selectedIndex == 2
+                          color: selectedIndex
+ == 2
                               ? AppColorManager.white
                               : AppColorManager.grey,
                         ),
@@ -143,20 +155,23 @@ class _MainAppBottomAppBarState extends State<MainAppBottomAppBar> {
                         AppColorManager.transparent),
                     onTap: () {
                       setState(() {
-                        _selectedIndex = 3;
+                        selectedIndex
+ = 3;
                       });
                     },
                     child: Column(
                       children: [
                         SvgPicture.asset(AppIconManager.user,
                             colorFilter: ColorFilter.mode(
-                                _selectedIndex == 3
+                                selectedIndex
+ == 3
                                     ? AppColorManager.white
                                     : AppColorManager.grey,
                                 BlendMode.srcIn)),
                         AppTextWidget(
                           text: "profile",
-                          color: _selectedIndex == 3
+                          color: selectedIndex
+ == 3
                               ? AppColorManager.white
                               : AppColorManager.grey,
                         ),
@@ -172,7 +187,8 @@ class _MainAppBottomAppBarState extends State<MainAppBottomAppBar> {
             transitionBuilder: (Widget child, Animation<double> animation) {
               return FadeTransition(opacity: animation, child: child);
             },
-            child: bottomBarScreens[_selectedIndex],
+            child: bottomBarScreens[selectedIndex
+],
           )),
     );
   }

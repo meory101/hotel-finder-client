@@ -183,7 +183,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
               : Padding(
                   padding: EdgeInsets.symmetric(
                       horizontal: AppWidthManager.w3Point8),
-                  child: Form(
+                  child:
+
+                  Form(
                     // key: formKey,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -379,7 +381,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           child: Padding(
                             padding: EdgeInsets.symmetric(
                                 vertical: AppHeightManager.h2point5),
-                            child: MainAppButton(
+                            child:
+
+                            MainAppButton(
                               onTap: () {
                                 updateProfile();
                               },

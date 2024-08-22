@@ -7,9 +7,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences shPref = await SharedPreferences.getInstance();
   AppSharedPreferences.init(shPref);
-
   runApp(
      const HotelFinder(),
-
   );
 }

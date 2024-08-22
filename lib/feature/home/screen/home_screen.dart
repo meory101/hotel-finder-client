@@ -16,7 +16,9 @@ import 'package:hotel_finder_client/core/widget/button/circular_text_button.dart
 import 'package:hotel_finder_client/core/widget/button/main_app_button.dart';
 import 'package:hotel_finder_client/core/widget/image/main_image_widget.dart';
 import 'package:hotel_finder_client/feature/home/screen/room_details.dart';
+import 'package:hotel_finder_client/feature/main/screen/main_bottom_app_bar_screen.dart';
 import 'package:hotel_finder_client/feature/map/screen/map_screen.dart';
+import 'package:hotel_finder_client/feature/search/screen/search_screen.dart';
 import 'package:hotel_finder_client/router/router.dart';
 import '../../../core/api/api_links.dart';
 import '../../../core/api/api_methods.dart';
@@ -253,7 +255,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       height: AppHeightManager.h1point8,
                     ),
                     Container(
+                      height: AppHeightManager.h7,
                       padding: EdgeInsets.only(
+                        top: AppHeightManager.h05,
                         left: AppWidthManager.w3Point8,
                       ),
                       decoration: BoxDecoration(
@@ -261,6 +265,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           BorderRadius.circular(AppRadiusManager.r50),
                           color: Colors.grey.withAlpha(100)),
                       child: TextFormField(
+                        controller: searchController,
                         style: TextStyle(
                             color: AppColorManager.white,
                             fontWeight: FontWeight.w500,
@@ -275,13 +280,26 @@ class _HomeScreenState extends State<HomeScreen> {
                           suffixIcon: SizedBox(
                             width: AppWidthManager.w5,
                             height: AppWidthManager.w5,
-                            child: Padding(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: AppWidthManager.w4point3),
-                                child: const Icon(
-                                  Icons.search,
-                                  color: AppColorManager.white,
-                                )),
+                            child:  InkWell(
+                              onTap: () {
+
+                                setState(() {
+                                  selectedIndex = 1;
+                                  searchController;
+                                  print(searchController.text);
+                                });
+                                Navigator.of(context).pushNamedAndRemoveUntil(RouteNamedScreens.bottomAppBar, (route) => false);
+                              },
+                              overlayColor: MaterialStatePropertyAll(AppColorManager.transparent),
+                              child: Padding(
+                                  padding: EdgeInsets.only(
+
+                                      bottom: AppWidthManager.w1),
+                                  child: const Icon(
+                                    Icons.search,
+                                    color: AppColorManager.white,
+                                  )),
+                            ),
                           ),
                           errorBorder: const UnderlineInputBorder(
                             borderSide: BorderSide(color: Colors.transparent),
