@@ -429,7 +429,6 @@ class _RoomDetailsState extends State<RoomDetails> {
                   ),
                   InkWell(
                     onTap: () {
-                      DateTime selectedDate = DateTime(DateTime.now().year - 12);
                       showModalBottomSheet(
                         context: context,
                         backgroundColor: AppColorManager.white,
@@ -453,10 +452,11 @@ class _RoomDetailsState extends State<RoomDetails> {
                                   child: Padding(
                                     padding: EdgeInsets.symmetric(horizontal: AppWidthManager.w5),
                                     child: CupertinoDatePicker(
-                                      // initialDateTime: DateTime.now(),
                                       onDateTimeChanged: (DateTime? pickedDate) {
                                         if (pickedDate != null) {
-                                          selectedDate = pickedDate;
+                                          setState(() {
+                                            dateTime = pickedDate;
+                                          });
                                         }
                                       },
                                       itemExtent: AppHeightManager.h5,
@@ -464,7 +464,6 @@ class _RoomDetailsState extends State<RoomDetails> {
                                       mode: CupertinoDatePickerMode.date,
                                       use24hFormat: true,
                                       minimumDate: DateTime.now(),
-                                      // maximumDate: DateTime(2028),
                                     ),
                                   ),
                                 ),

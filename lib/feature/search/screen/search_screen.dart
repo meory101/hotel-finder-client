@@ -12,10 +12,12 @@ import '../../../core/api/api_methods.dart';
 import '../../../core/resource/color_manager.dart';
 import '../../../core/resource/font_manager.dart';
 import '../../../core/resource/icon_manager.dart';
+import '../../../core/resource/image_manager.dart';
 import '../../../core/resource/size_manager.dart';
 import 'package:http/http.dart' as http;
 
 import '../../../core/widget/button/main_app_button.dart';
+import '../../../core/widget/empty/EmptyWidget.dart';
 import '../../../core/widget/image/main_image_widget.dart';
 import '../../../router/router.dart';
 import '../../home/screen/room_details.dart';
@@ -79,6 +81,7 @@ class _SearchScreenState extends State<SearchScreen> {
     }
     setState(() {});
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -156,6 +159,17 @@ class _SearchScreenState extends State<SearchScreen> {
                     fontWeight: FontWeight.w700,
                     fontSize: FontSizeManager.fs18,
                     color: AppColorManager.black,
+                  ),
+                ),
+              ),
+              Visibility(
+                visible: statusRoom == 1 && rooms != null && rooms.isEmpty,
+                child: Padding(
+                  padding: EdgeInsets.only(top: AppHeightManager.h6),
+                  child: EmptyWidget(
+                    image: AppImageManager.empty,
+                    title: "Nothing Found.",
+                    subTitle: "Please Try Again.",
                   ),
                 ),
               ),
