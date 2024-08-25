@@ -50,6 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
       });
 
       popularRooms = jsonDecode(response.body);
+      popularRooms = filterRoomsBasedOnLocation(popularRooms, lat, long);
     } else {
       setState(() {
         status = 2;
@@ -82,6 +83,7 @@ class _HomeScreenState extends State<HomeScreen> {
       });
 
       rooms = jsonDecode(response.body);
+      rooms = filterRoomsBasedOnLocation(rooms, lat, long);
     } else {
       setState(() {
         statusRoom = 2;
@@ -113,10 +115,42 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    getPopularRooms();
-    getRooms();
     getCurrentLocation();
+
+
     super.initState();
+  }
+
+  filterRoomsBasedOnLocation(data, lat, long) {
+    var newData = [];
+    print(data.length);
+    print(data[0]['hotel']);
+    print('00000000000000000000000000000000000');
+    // print(data);
+    for (int i = 0; i < data.length; i++) {
+      print(data[i]);
+
+      for (int j = 0; j < data.length; j++) {
+
+          double temp1 = Geolocator.distanceBetween(
+            double.parse(lat), double.parse(long), data[i]['hotel']['lat'].toDouble() ?? 0.0, data[i]['hotel']['long'].toDouble()?? 0.0);
+        double temp2 = Geolocator.distanceBetween(
+            double.parse(lat), double.parse(long), data[j]['hotel']['lat'].toDouble()?? 0.0, data[j]['hotel']['long'].toDouble()?? 0.0);
+
+        if (temp1 < temp2) {
+          newData.add(data[i]);
+        } else {
+          newData.add(data[j]);
+        }
+      }
+    }
+    print(newData);
+    print('00000000000000000000000000000');
+    newData = newData.toSet().toList();
+    setState(() {
+
+    });
+    return newData;
   }
 
   Position? currentLocation;
@@ -126,6 +160,8 @@ class _HomeScreenState extends State<HomeScreen> {
         await Geolocator.getCurrentPosition().then((value) => (value));
     lat = currentLocation?.latitude.toString();
     long = currentLocation?.longitude.toString();
+    getPopularRooms();
+    getRooms();
     setState(() {});
   }
 
@@ -201,6 +237,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           lat = latlong.split('*').first;
                           long = latlong.split('*').last;
                         }
+                        getPopularRooms();
+                        getRooms();
                         setState(() {});
                       },
                       child: Row(
