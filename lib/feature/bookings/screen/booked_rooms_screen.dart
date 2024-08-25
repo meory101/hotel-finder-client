@@ -1,10 +1,12 @@
 import 'dart:convert';
 
+import 'package:animated_rating_stars/animated_rating_stars.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hotel_finder_client/core/resource/image_manager.dart';
+import 'package:hotel_finder_client/core/storage/shared/shared_pref.dart';
 import 'package:hotel_finder_client/core/widget/button/main_app_button.dart';
 import 'package:hotel_finder_client/core/widget/empty/EmptyWidget.dart';
 import 'package:hotel_finder_client/core/widget/text/status_text.dart';
@@ -63,13 +65,34 @@ class _BookedRoomsScreenState extends State<BookedRoomsScreen> {
     }
     setState(() {});
   }
-
+rateRoom(id,value)async{
+  http.Response response =
+  await HttpMethods().postMethod(ApiPostUrl.rateRoom,{
+    'value' :value.toString(),
+    'room_id' : id.toString(),
+  'user_id'  : AppSharedPreferences.getUserId()
+  });
+  if(response.statusCode == 200){
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: AppTextWidget(
+          text: "Successfully rated this room",
+          color: AppColorManager.white,
+          fontSize: FontSizeManager.fs14,
+          fontWeight: FontWeight.w700,
+          overflow: TextOverflow.visible,
+        ),
+      ),
+    );
+    Navigator.of(context).pop();
+  }
+}
   @override
   void initState() {
     getReservations();
     super.initState();
   }
-
+double rateValue =0;
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
@@ -198,212 +221,303 @@ class _BookedRoomsScreenState extends State<BookedRoomsScreen> {
                         padding:
                         EdgeInsets.symmetric(vertical: AppHeightManager.h3),
                         child: reservations == null
-                            ? SizedBox()
+                            ? const SizedBox()
                             : ListView.builder(
                           padding: EdgeInsets.zero,
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
                           itemCount: reservations.length,
                           itemBuilder: (context, index) {
-                            return Card(
-                              surfaceTintColor:
-                              AppColorManager.transparent,
-                              elevation: 4,
-                              shadowColor:
-                              AppColorManager.greyWithOpacity1,
-                              child: Container(
-                                  margin: EdgeInsets.only(
-                                      bottom: AppHeightManager.h1point8),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(
-                                      AppRadiusManager.r30,
-                                    ),
-                                  ),
-                                  child: Row(
-                                    crossAxisAlignment:
-                                    CrossAxisAlignment.start,
-                                    children: [
-                                      Expanded(
-                                        flex: 2,
-                                        child: Container(
-                                          padding: EdgeInsets.all(
-                                              AppWidthManager.w3Point8),
-                                          height: AppHeightManager.h15,
-                                          width: double.infinity,
-                                          decoration: BoxDecoration(
-                                              image: DecorationImage(
-                                                filterQuality:
-                                                FilterQuality.high,
-                                                fit: BoxFit.cover,
-                                                image: NetworkImage(
-                                                  '${imageUrl}${reservations[index]['image']
-                                                      .first['image']}',
+                            return InkWell(
+                              overlayColor: const MaterialStatePropertyAll(AppColorManager.transparent),
+                              onTap: () {
+                                if(reservations[index]['data']['type']=="1"){
+                                    showModalBottomSheet(
+                                      context: context, builder: (context) {
+                                      return Container(
+                                        margin: EdgeInsets.all(AppWidthManager.w3Point8),
+                                        width: AppWidthManager.w100,
+                                        height: AppHeightManager.h14,
+                                        child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: [
+                                            AnimatedRatingStars(
+                                              initialRating: rateValue,
+                                              minRating: 0.0,
+                                              maxRating: 5.0,
+                                              filledColor: Colors.amber,
+                                              emptyColor: Colors.grey,
+                                              filledIcon: Icons.star,
+                                              halfFilledIcon: Icons.star_half,
+                                              emptyIcon: Icons.star_border,
+                                              onChanged: (double rating) {
+                                                    setState(() {
+                                                      rateValue = rating;
+                                                    });
+                                              },
+                                              displayRatingValue: true,
+                                              interactiveTooltips: true,
+                                              customFilledIcon: Icons.star,
+                                              customHalfFilledIcon: Icons.star_half,
+                                              customEmptyIcon: Icons.star_border,
+                                              starSize: 25.0,
+                                              animationDuration: const Duration(milliseconds: 300),
+                                              animationCurve: Curves.easeInOut,
+                                              readOnly: false,
+
+                                            ),
+                                            SizedBox(
+                                              height: AppWidthManager.w3Point8,
+                                            ),
+                                            Row(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: [
+                                                MainAppButton(
+                                                  alignment: Alignment.center,
+                                                  width: AppWidthManager.w35,
+                                                  height: AppHeightManager.h4,
+                                                  color: AppColorManager.blackShadow,
+                                                  child:  AppTextWidget(text: "cancel"
+                                                    ,
+                                                    color: AppColorManager.white,
+                                                    fontWeight: FontWeight.w600,
+                                                    fontSize: FontSizeManager.fs16,
+                                                  ),
+                                                  onTap:() {
+                                                    Navigator.of(context).pop();
+                                                  }
+
                                                 ),
-                                              ),
-                                              borderRadius:
-                                              BorderRadius.circular(
-                                                  AppRadiusManager
-                                                      .r20)),
+                                                SizedBox(
+                                                  width: AppWidthManager.w3Point8,
+                                                ),
+                                                MainAppButton(
+                                                  alignment: Alignment.center,
+                                                  width: AppWidthManager.w35,
+                                                  height: AppHeightManager.h4,
+                                                  color: AppColorManager.blackShadow,
+                                                  child:  AppTextWidget(text: "okay"
+
+                                                  ,
+                                                    color: AppColorManager.white,
+                                                    fontWeight: FontWeight.w600,
+                                                    fontSize: FontSizeManager.fs16,
+                                                  ),
+                                                  onTap:() {
+                                                   rateRoom( reservations[
+                                                   index]
+                                                   ['room']
+                                                   ['id'], rateValue);
+                                                  } ,
+                                                ),
+                                              ],
+                                            )
+                                          ],
                                         ),
+                                      );
+                                    },);
+                                }
+                              },
+                              child: Card(
+                                surfaceTintColor:
+                                AppColorManager.transparent,
+                                elevation: 4,
+                                shadowColor:
+                                AppColorManager.greyWithOpacity1,
+                                child: Container(
+                                    margin: EdgeInsets.only(
+                                        bottom: AppHeightManager.h1point8),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(
+                                        AppRadiusManager.r30,
                                       ),
-                                      Expanded(
-                                        flex: 4,
-                                        child: Padding(
-                                          padding: EdgeInsets.all(
-                                              AppWidthManager.w3Point8),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                            children: [
-                                              Row(
-                                                mainAxisAlignment:
-                                                MainAxisAlignment
-                                                    .spaceBetween,
-                                                children: [
-                                                  Row(
-                                                    children: [
-                                                      AppTextWidget(
-                                                        text: reservations[
-                                                        index]
-                                                        ['room']
-                                                        ['name'],
-                                                        fontSize:
-                                                        FontSizeManager
-                                                            .fs16,
-                                                        fontWeight:
-                                                        FontWeight
-                                                            .w700,
-                                                        color: AppColorManager
-                                                            .textAppColor,
-                                                      ),
-                                                      SizedBox(
-                                                        width:
-                                                        AppWidthManager
-                                                            .w1,
-                                                      ),
-                                                      AppTextWidget(
-                                                        text:
-                                                        '(${reservations[index]['room']['capacity']} People)',
-                                                        fontSize:
-                                                        FontSizeManager
-                                                            .fs14,
-                                                        fontWeight:
-                                                        FontWeight
-                                                            .w600,
-                                                        color: AppColorManager
-                                                            .textAppColor,
-                                                      ),
-                                                    ],
+                                    ),
+                                    child: Row(
+                                      crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                      children: [
+                                        Expanded(
+                                          flex: 2,
+                                          child: Container(
+                                            padding: EdgeInsets.all(
+                                                AppWidthManager.w3Point8),
+                                            height: AppHeightManager.h15,
+                                            width: double.infinity,
+                                            decoration: BoxDecoration(
+                                                image: DecorationImage(
+                                                  filterQuality:
+                                                  FilterQuality.high,
+                                                  fit: BoxFit.cover,
+                                                  image: NetworkImage(
+                                                    '${imageUrl}${reservations[index]['image']
+                                                        .first['image']}',
                                                   ),
-                                                ],
-                                              ),
-                                              Row(
-                                                mainAxisAlignment:
-                                                MainAxisAlignment
-                                                    .start,
-                                                children: [
-                                                  AppTextWidget(
-                                                    text: reservations[
-                                                    index]['room']
-                                                    ['desc'],
-                                                    fontSize:
-                                                    FontSizeManager
-                                                        .fs15,
-                                                    fontWeight:
-                                                    FontWeight.w600,
-                                                    color: AppColorManager
-                                                        .textGrey,
-                                                    maxLines: 2,
-                                                  ),
-                                                  SizedBox(
-                                                    width: AppWidthManager
-                                                        .w2,
-                                                  ),
-                                                  AppTextWidget(
-                                                    text: reservations[
-                                                    index]
-                                                    ['room']
-                                                    ['price']
-                                                        .toString(),
-                                                    fontSize:
-                                                    FontSizeManager
-                                                        .fs15,
-                                                    fontWeight:
-                                                    FontWeight.w800,
-                                                    color: AppColorManager
-                                                        .textAppColor,
-                                                  ),
-                                                ],
-                                              ),
-                                              SizedBox(
-                                                height:
-                                                AppHeightManager.h1,
-                                              ),
-                                              Row(
-                                                children: [
-                                                  SizedBox(
-                                                    height:
-                                                    AppHeightManager
-                                                        .h2,
-                                                    width:
-                                                    AppHeightManager
-                                                        .h2,
-                                                    child:
-                                                    SvgPicture.asset(
-                                                        AppIconManager
-                                                            .qua),
-                                                  ),
-                                                  AppTextWidget(
-                                                    text:
-                                                    '${reservations[index]['data']['date']
-                                                        .split(' ')
-                                                        .first ?? ""} ',
-                                                    fontSize:
-                                                    FontSizeManager
-                                                        .fs14,
-                                                    fontWeight:
-                                                    FontWeight.w600,
-                                                    color: AppColorManager.textGrey,
-                                                  ),
-                                                ],
-                                              ),
-                                              SizedBox(
-                                                height:
-                                                AppHeightManager.h1,
-                                              ),
-                                              Row(
-                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                children: [
-                                                  AppTextWidget(
-                                                    text:
-                                                    '${reservations[index]['data']['nights'] ??
-                                                        ""} nights',
-                                                    fontSize:
-                                                    FontSizeManager
-                                                        .fs15,
-                                                    fontWeight:
-                                                    FontWeight.w800,
-                                                    color: Colors.black,
-                                                  ),
-                                                  SizedBox(
-                                                    width:
-                                                    AppHeightManager.h3,
-                                                  ),
-                                                  FlexStatusText(
-                                                      color: AppColorManager
-                                                          .green,
-                                                      text: reservations[index]['data']['type'] =="0"
-                                                      ? 'waiting': reservations[index]['data']['type']=="1"? 'accepted': 'rejected'
-                                                          )
-                                                ],
-                                              ),
-                                            ],
+                                                ),
+                                                borderRadius:
+                                                BorderRadius.circular(
+                                                    AppRadiusManager
+                                                        .r20)),
                                           ),
                                         ),
-                                      )
-                                    ],
-                                  )),
+                                        Expanded(
+                                          flex: 4,
+                                          child: Padding(
+                                            padding: EdgeInsets.all(
+                                                AppWidthManager.w3Point8),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                              children: [
+                                                Row(
+                                                  mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                                  children: [
+                                                    Row(
+                                                      children: [
+                                                        AppTextWidget(
+                                                          text: reservations[
+                                                          index]
+                                                          ['room']
+                                                          ['name'],
+                                                          fontSize:
+                                                          FontSizeManager
+                                                              .fs16,
+                                                          fontWeight:
+                                                          FontWeight
+                                                              .w700,
+                                                          color: AppColorManager
+                                                              .textAppColor,
+                                                        ),
+                                                        SizedBox(
+                                                          width:
+                                                          AppWidthManager
+                                                              .w1,
+                                                        ),
+                                                        AppTextWidget(
+                                                          text:
+                                                          '(${reservations[index]['room']['capacity']} People)',
+                                                          fontSize:
+                                                          FontSizeManager
+                                                              .fs14,
+                                                          fontWeight:
+                                                          FontWeight
+                                                              .w600,
+                                                          color: AppColorManager
+                                                              .textAppColor,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                ),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .start,
+                                                  children: [
+                                                    AppTextWidget(
+                                                      text: reservations[
+                                                      index]['room']
+                                                      ['desc'],
+                                                      fontSize:
+                                                      FontSizeManager
+                                                          .fs15,
+                                                      fontWeight:
+                                                      FontWeight.w600,
+                                                      color: AppColorManager
+                                                          .textGrey,
+                                                      maxLines: 2,
+                                                    ),
+                                                    SizedBox(
+                                                      width: AppWidthManager
+                                                          .w2,
+                                                    ),
+                                                    AppTextWidget(
+                                                      text: reservations[
+                                                      index]
+                                                      ['room']
+                                                      ['price']
+                                                          .toString(),
+                                                      fontSize:
+                                                      FontSizeManager
+                                                          .fs15,
+                                                      fontWeight:
+                                                      FontWeight.w800,
+                                                      color: AppColorManager
+                                                          .textAppColor,
+                                                    ),
+                                                  ],
+                                                ),
+                                                SizedBox(
+                                                  height:
+                                                  AppHeightManager.h1,
+                                                ),
+                                                Row(
+                                                  children: [
+                                                    SizedBox(
+                                                      height:
+                                                      AppHeightManager
+                                                          .h2,
+                                                      width:
+                                                      AppHeightManager
+                                                          .h2,
+                                                      child:
+                                                      SvgPicture.asset(
+                                                          AppIconManager
+                                                              .qua),
+                                                    ),
+                                                    AppTextWidget(
+                                                      text:
+                                                      '${reservations[index]['data']['date']
+                                                          .split(' ')
+                                                          .first ?? ""} ',
+                                                      fontSize:
+                                                      FontSizeManager
+                                                          .fs14,
+                                                      fontWeight:
+                                                      FontWeight.w600,
+                                                      color: AppColorManager.textGrey,
+                                                    ),
+                                                  ],
+                                                ),
+                                                SizedBox(
+                                                  height:
+                                                  AppHeightManager.h1,
+                                                ),
+                                                Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                  children: [
+                                                    AppTextWidget(
+                                                      text:
+                                                      '${reservations[index]['data']['nights'] ??
+                                                          ""} nights',
+                                                      fontSize:
+                                                      FontSizeManager
+                                                          .fs15,
+                                                      fontWeight:
+                                                      FontWeight.w800,
+                                                      color: Colors.black,
+                                                    ),
+                                                    SizedBox(
+                                                      width:
+                                                      AppHeightManager.h3,
+                                                    ),
+                                                    FlexStatusText(
+                                                        color: AppColorManager
+                                                            .green,
+                                                        text: reservations[index]['data']['type'] =="0"
+                                                        ? 'waiting': reservations[index]['data']['type']=="1"? 'accepted': 'rejected'
+                                                            )
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    )),
+                              ),
                             );
                           },
                         ),

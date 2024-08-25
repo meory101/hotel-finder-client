@@ -69,8 +69,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     setState(() {
       status = 0;
     });
-    print(gender);
-    print(number);
     var data = {
       'name': name ?? "",
       'gender': gender ?? "",
@@ -80,9 +78,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     http.Response response =
         await HttpMethods().postMethod(ApiPostUrl.updateUserProfile, data);
-    print(response.body);
-    print(response.statusCode);
-    print(jsonDecode(response.body));
 
     if (response.statusCode == 200) {
       setState(() {

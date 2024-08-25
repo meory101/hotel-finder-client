@@ -1,6 +1,4 @@
-import 'dart:async';
 import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -12,7 +10,6 @@ import 'package:hotel_finder_client/core/resource/icon_manager.dart';
 import 'package:hotel_finder_client/core/resource/image_manager.dart';
 import 'package:hotel_finder_client/core/resource/size_manager.dart';
 import 'package:hotel_finder_client/core/storage/shared/shared_pref.dart';
-import 'package:hotel_finder_client/core/widget/button/circular_text_button.dart';
 import 'package:hotel_finder_client/core/widget/button/main_app_button.dart';
 import 'package:hotel_finder_client/core/widget/image/main_image_widget.dart';
 import 'package:hotel_finder_client/feature/home/screen/room_details.dart';
@@ -45,7 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
       status = 0;
     });
     http.Response response =
-    await HttpMethods().getMethod(ApiGetUrl.getMostPopularRooms);
+        await HttpMethods().getMethod(ApiGetUrl.getMostPopularRooms);
 
     if (response.statusCode == 200) {
       setState(() {
@@ -126,13 +123,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   getCurrentLocation() async {
     currentLocation =
-    await Geolocator.getCurrentPosition().then((value) => (value));
-   lat = currentLocation?.latitude.toString();
-   long = currentLocation?.longitude.toString();
-   setState(() {
-
-   });
-    print(currentLocation);
+        await Geolocator.getCurrentPosition().then((value) => (value));
+    lat = currentLocation?.latitude.toString();
+    long = currentLocation?.longitude.toString();
+    setState(() {});
   }
 
   @override
@@ -194,24 +188,20 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     InkWell(
                       onTap: () async {
-                        String? latlong = await Navigator.of(context)
-                            .push(MaterialPageRoute(builder: (context) {
-                              return  MapScreen(
-                                lat: lat,
-                                long: long,
-                              );
-                            },));
+                        String? latlong =
+                            await Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) {
+                            return MapScreen(
+                              lat: lat,
+                              long: long,
+                            );
+                          },
+                        ));
                         if (latlong != null) {
-                          lat = latlong
-                              .split('*')
-                              .first ;
-                          long = latlong
-                              .split('*')
-                              .last ;
+                          lat = latlong.split('*').first;
+                          long = latlong.split('*').last;
                         }
-                        setState(() {
-                          
-                        });
+                        setState(() {});
                       },
                       child: Row(
                         children: [
@@ -228,9 +218,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             width: 2,
                           ),
                           Text(
-                            "${double.parse(lat??"0.0").toStringAsFixed(
-                                2)},${double.parse(long??"0.0")
-                                .toStringAsFixed(2)}",
+                            "${double.parse(lat ?? "0.0").toStringAsFixed(2)},${double.parse(long ?? "0.0").toStringAsFixed(2)}",
                             style: TextStyle(
                                 color: Colors.white,
                                 fontSize: FontSizeManager.fs15,
@@ -244,8 +232,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     AppTextWidget(
                       text:
-                      "Hey, ${AppSharedPreferences
-                          .getUserName()}! Tell us where you want to go today",
+                          "Hey, ${AppSharedPreferences.getUserName()}! Tell us where you want to go today",
                       fontSize: FontSizeManager.fs20,
                       fontWeight: FontWeight.w700,
                       color: AppColorManager.white,
@@ -262,7 +249,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       decoration: BoxDecoration(
                           borderRadius:
-                          BorderRadius.circular(AppRadiusManager.r50),
+                              BorderRadius.circular(AppRadiusManager.r50),
                           color: Colors.grey.withAlpha(100)),
                       child: TextFormField(
                         controller: searchController,
@@ -280,20 +267,21 @@ class _HomeScreenState extends State<HomeScreen> {
                           suffixIcon: SizedBox(
                             width: AppWidthManager.w5,
                             height: AppWidthManager.w5,
-                            child:  InkWell(
+                            child: InkWell(
                               onTap: () {
-
                                 setState(() {
                                   selectedIndex = 1;
                                   searchController;
                                   print(searchController.text);
                                 });
-                                Navigator.of(context).pushNamedAndRemoveUntil(RouteNamedScreens.bottomAppBar, (route) => false);
+                                Navigator.of(context).pushNamedAndRemoveUntil(
+                                    RouteNamedScreens.bottomAppBar,
+                                    (route) => false);
                               },
-                              overlayColor: MaterialStatePropertyAll(AppColorManager.transparent),
+                              overlayColor: MaterialStatePropertyAll(
+                                  AppColorManager.transparent),
                               child: Padding(
                                   padding: EdgeInsets.only(
-
                                       bottom: AppWidthManager.w1),
                                   child: const Icon(
                                     Icons.search,
@@ -354,7 +342,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius:
-                            BorderRadius.circular(AppRadiusManager.r30)),
+                                BorderRadius.circular(AppRadiusManager.r30)),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -363,7 +351,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               child: MainImageWidget(
                                 height: AppHeightManager.h40,
                                 borderRadius:
-                                BorderRadius.circular(AppRadiusManager.r30),
+                                    BorderRadius.circular(AppRadiusManager.r30),
                                 fit: BoxFit.fill,
                                 imageUrl: '',
                               ),
@@ -415,200 +403,198 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: popularRooms == null
                       ? const SizedBox()
                       : ListView.builder(
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    scrollDirection: Axis.horizontal,
-                    itemCount: popularRooms.length,
-                    itemBuilder: (context, index) {
-                      return InkWell(
-                        onTap: () {
-                          onRoomClicked(popularRooms[index]);
-                        },
-                        child: Card(
-                          surfaceTintColor: AppColorManager.transparent,
-                          elevation: 4,
-                          shadowColor: AppColorManager.greyWithOpacity1,
-                          child: Container(
-                              margin: EdgeInsets.only(
-                                  left: AppWidthManager.w3Point8),
-                              height: AppHeightManager.h40,
-                              width: AppWidthManager.w80,
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(
-                                      AppRadiusManager.r30)),
-                              child: Column(
-                                crossAxisAlignment:
-                                CrossAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    padding: EdgeInsets.all(
-                                        AppWidthManager.w3Point8),
-                                    height: AppHeightManager.h30,
-                                    width: double.infinity,
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          scrollDirection: Axis.horizontal,
+                          itemCount: popularRooms.length,
+                          itemBuilder: (context, index) {
+                            return InkWell(
+                              onTap: () {
+                                onRoomClicked(popularRooms[index]);
+                              },
+                              child: Card(
+                                surfaceTintColor: AppColorManager.transparent,
+                                elevation: 4,
+                                shadowColor: AppColorManager.greyWithOpacity1,
+                                child: Container(
+                                    margin: EdgeInsets.only(
+                                        left: AppWidthManager.w3Point8),
+                                    height: AppHeightManager.h40,
+                                    width: AppWidthManager.w80,
                                     decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                          filterQuality:
-                                          FilterQuality.high,
-                                          fit: BoxFit.cover,
-                                          image: NetworkImage(
-                                            '$imageUrl${popularRooms[index]['image']
-                                                .first['image']}',
-                                          ),
-                                        ),
-                                        borderRadius:
-                                        BorderRadius.circular(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(
                                             AppRadiusManager.r30)),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.all(
-                                        AppWidthManager.w3Point8),
                                     child: Column(
                                       crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                          CrossAxisAlignment.start,
                                       children: [
-                                        Row(
-                                          mainAxisAlignment:
-                                          MainAxisAlignment
-                                              .spaceBetween,
-                                          children: [
-                                            Row(
-                                              children: [
-                                                AppTextWidget(
-                                                  text:
-                                                  popularRooms[index]
-                                                  ['room']
-                                                  ['name'],
-                                                  fontSize:
-                                                  FontSizeManager
-                                                      .fs16,
-                                                  fontWeight:
-                                                  FontWeight.w700,
-                                                  color: AppColorManager
-                                                      .textAppColor,
+                                        Container(
+                                          padding: EdgeInsets.all(
+                                              AppWidthManager.w3Point8),
+                                          height: AppHeightManager.h30,
+                                          width: double.infinity,
+                                          decoration: BoxDecoration(
+                                              image: DecorationImage(
+                                                filterQuality:
+                                                    FilterQuality.high,
+                                                fit: BoxFit.cover,
+                                                image: NetworkImage(
+                                                  '$imageUrl${popularRooms[index]['image'].first['image']}',
                                                 ),
-                                                SizedBox(
-                                                  width:
-                                                  AppWidthManager.w1,
-                                                ),
-                                                AppTextWidget(
-                                                  text:
-                                                  '(${popularRooms[index]['room']['capacity']} People)',
-                                                  fontSize:
-                                                  FontSizeManager
-                                                      .fs14,
-                                                  fontWeight:
-                                                  FontWeight.w600,
-                                                  color: AppColorManager
-                                                      .textAppColor,
-                                                ),
-                                              ],
-                                            ),
-                                            Row(
-                                              children: [
-                                                SizedBox(
-                                                  height:
-                                                  AppHeightManager.h2,
-                                                  width:
-                                                  AppHeightManager.h2,
-                                                  child: SvgPicture.asset(
-                                                      AppIconManager
-                                                          .star),
-                                                ),
-                                                AppTextWidget(
-                                                  text:
-                                                  '${popularRooms[index]['rate'] ??
-                                                      ""} star',
-                                                  fontSize:
-                                                  FontSizeManager
-                                                      .fs15,
-                                                  fontWeight:
-                                                  FontWeight.w800,
-                                                  color: Colors.amber,
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                        Row(
-                                          mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                          children: [
-                                            AppTextWidget(
-                                              text: popularRooms[index]
-                                              ['room']['desc'],
-                                              fontSize:
-                                              FontSizeManager.fs15,
-                                              fontWeight: FontWeight.w600,
-                                              color: AppColorManager
-                                                  .textGrey,
-                                              maxLines: 2,
-                                            ),
-                                            SizedBox(
-                                              width: AppWidthManager.w2,
-                                            ),
-                                            AppTextWidget(
-                                              text: popularRooms[index]
-                                              ['room']['price']
-                                                  .toString(),
-                                              fontSize:
-                                              FontSizeManager.fs15,
-                                              fontWeight: FontWeight.w800,
-                                              color: AppColorManager
-                                                  .textAppColor,
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(
-                                          height: AppHeightManager.h1,
-                                        ),
-                                        Wrap(
-                                          children: List.generate(
-                                              popularRooms[index]
-                                              ['vnames']
-                                                  .length >
-                                                  2
-                                                  ? 2
-                                                  : popularRooms[index]
-                                              ['vnames']
-                                                  .length, (i) {
-                                            return MainAppButton(
-                                              margin: EdgeInsets.only(
-                                                  right:
-                                                  AppWidthManager.w2),
-                                              padding:
-                                              EdgeInsets.symmetric(
-                                                  horizontal:
-                                                  AppWidthManager
-                                                      .w3Point8,
-                                                  vertical:
-                                                  AppHeightManager
-                                                      .h02),
-                                              color: AppColorManager
-                                                  .greyWithOpacity6,
-                                              child: AppTextWidget(
-                                                text: popularRooms[index]
-                                                ['vnames'][i]
-                                                ['name'] +
-                                                    ' view',
-                                                fontSize:
-                                                FontSizeManager.fs15,
-                                                fontWeight:
-                                                FontWeight.w600,
-                                                color: AppColorManager
-                                                    .textGrey,
                                               ),
-                                            );
-                                          }),
+                                              borderRadius:
+                                                  BorderRadius.circular(
+                                                      AppRadiusManager.r30)),
                                         ),
+                                        Padding(
+                                          padding: EdgeInsets.all(
+                                              AppWidthManager.w3Point8),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Row(
+                                                    children: [
+                                                      AppTextWidget(
+                                                        text:
+                                                            popularRooms[index]
+                                                                    ['room']
+                                                                ['name'],
+                                                        fontSize:
+                                                            FontSizeManager
+                                                                .fs16,
+                                                        fontWeight:
+                                                            FontWeight.w700,
+                                                        color: AppColorManager
+                                                            .textAppColor,
+                                                      ),
+                                                      SizedBox(
+                                                        width:
+                                                            AppWidthManager.w1,
+                                                      ),
+                                                      AppTextWidget(
+                                                        text:
+                                                            '(${popularRooms[index]['room']['capacity']} People)',
+                                                        fontSize:
+                                                            FontSizeManager
+                                                                .fs14,
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        color: AppColorManager
+                                                            .textAppColor,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  Row(
+                                                    children: [
+                                                      SizedBox(
+                                                        height:
+                                                            AppHeightManager.h2,
+                                                        width:
+                                                            AppHeightManager.h2,
+                                                        child: SvgPicture.asset(
+                                                            AppIconManager
+                                                                .star),
+                                                      ),
+                                                      AppTextWidget(
+                                                        text:
+                                                            '${popularRooms[index]['rate'] ?? ""} star',
+                                                        fontSize:
+                                                            FontSizeManager
+                                                                .fs15,
+                                                        fontWeight:
+                                                            FontWeight.w800,
+                                                        color: Colors.amber,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                children: [
+                                                  AppTextWidget(
+                                                    text: popularRooms[index]
+                                                        ['room']['desc'],
+                                                    fontSize:
+                                                        FontSizeManager.fs15,
+                                                    fontWeight: FontWeight.w600,
+                                                    color: AppColorManager
+                                                        .textGrey,
+                                                    maxLines: 2,
+                                                  ),
+                                                  SizedBox(
+                                                    width: AppWidthManager.w2,
+                                                  ),
+                                                  AppTextWidget(
+                                                    text: popularRooms[index]
+                                                            ['room']['price']
+                                                        .toString(),
+                                                    fontSize:
+                                                        FontSizeManager.fs15,
+                                                    fontWeight: FontWeight.w800,
+                                                    color: AppColorManager
+                                                        .textAppColor,
+                                                  ),
+                                                ],
+                                              ),
+                                              SizedBox(
+                                                height: AppHeightManager.h1,
+                                              ),
+                                              Wrap(
+                                                children: List.generate(
+                                                    popularRooms[index]
+                                                                    ['vnames']
+                                                                .length >
+                                                            2
+                                                        ? 2
+                                                        : popularRooms[index]
+                                                                ['vnames']
+                                                            .length, (i) {
+                                                  return MainAppButton(
+                                                    margin: EdgeInsets.only(
+                                                        right:
+                                                            AppWidthManager.w2),
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                            horizontal:
+                                                                AppWidthManager
+                                                                    .w3Point8,
+                                                            vertical:
+                                                                AppHeightManager
+                                                                    .h02),
+                                                    color: AppColorManager
+                                                        .greyWithOpacity6,
+                                                    child: AppTextWidget(
+                                                      text: popularRooms[index]
+                                                                  ['vnames'][i]
+                                                              ['name'] +
+                                                          ' view',
+                                                      fontSize:
+                                                          FontSizeManager.fs15,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      color: AppColorManager
+                                                          .textGrey,
+                                                    ),
+                                                  );
+                                                }),
+                                              ),
+                                            ],
+                                          ),
+                                        )
                                       ],
-                                    ),
-                                  )
-                                ],
-                              )),
+                                    )),
+                              ),
+                            );
+                          },
                         ),
-                      );
-                    },
-                  ),
                 ),
               ),
               Padding(
@@ -641,7 +627,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius:
-                            BorderRadius.circular(AppRadiusManager.r30)),
+                                BorderRadius.circular(AppRadiusManager.r30)),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -650,7 +636,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               child: MainImageWidget(
                                 height: AppHeightManager.h40,
                                 borderRadius:
-                                BorderRadius.circular(AppRadiusManager.r30),
+                                    BorderRadius.circular(AppRadiusManager.r30),
                                 fit: BoxFit.fill,
                                 imageUrl: '',
                               ),
@@ -700,190 +686,187 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: rooms == null
                     ? SizedBox()
                     : ListView.builder(
-                  padding: EdgeInsets.zero,
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  scrollDirection: Axis.vertical,
-                  itemCount: rooms.length,
-                  itemBuilder: (context, index) {
-                    return InkWell(
-                      onTap: () {
-                        onRoomClicked(rooms[index]);
-                      },
-                      child:
-                      Card(
-                        surfaceTintColor: AppColorManager.transparent,
-                        elevation: 4,
-                        shadowColor: AppColorManager.greyWithOpacity1,
-                        child: Container(
-                            margin: EdgeInsets.only(
-                                left: AppWidthManager.w3Point8,
-                                right: AppWidthManager.w3Point8,
-                                bottom: AppHeightManager.h1point8),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(
-                                AppRadiusManager.r30,
-                              ),
-                            ),
-                            child: Column(
-                              crossAxisAlignment:
-                              CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  padding: EdgeInsets.all(
-                                      AppWidthManager.w3Point8),
-                                  height: AppHeightManager.h30,
-                                  width: double.infinity,
+                        padding: EdgeInsets.zero,
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        scrollDirection: Axis.vertical,
+                        itemCount: rooms.length,
+                        itemBuilder: (context, index) {
+                          return InkWell(
+                            onTap: () {
+                              onRoomClicked(rooms[index]);
+                            },
+                            child: Card(
+                              surfaceTintColor: AppColorManager.transparent,
+                              elevation: 4,
+                              shadowColor: AppColorManager.greyWithOpacity1,
+                              child: Container(
+                                  margin: EdgeInsets.only(
+                                      left: AppWidthManager.w3Point8,
+                                      right: AppWidthManager.w3Point8,
+                                      bottom: AppHeightManager.h1point8),
                                   decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                        filterQuality: FilterQuality.high,
-                                        fit: BoxFit.cover,
-                                        image: NetworkImage(
-                                          '$imageUrl${rooms[index]['image']
-                                              .first['image']}',
-                                        ),
-                                      ),
-                                      borderRadius: BorderRadius.circular(
-                                          AppRadiusManager.r30)),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.all(
-                                      AppWidthManager.w3Point8),
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(
+                                      AppRadiusManager.r30,
+                                    ),
+                                  ),
                                   child: Column(
                                     crossAxisAlignment:
-                                    CrossAxisAlignment.start,
+                                        CrossAxisAlignment.start,
                                     children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                        MainAxisAlignment
-                                            .spaceBetween,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              AppTextWidget(
-                                                text: rooms[index]['room']
-                                                ['name'],
-                                                fontSize:
-                                                FontSizeManager.fs16,
-                                                fontWeight:
-                                                FontWeight.w700,
-                                                color: AppColorManager
-                                                    .textAppColor,
+                                      Container(
+                                        padding: EdgeInsets.all(
+                                            AppWidthManager.w3Point8),
+                                        height: AppHeightManager.h30,
+                                        width: double.infinity,
+                                        decoration: BoxDecoration(
+                                            image: DecorationImage(
+                                              filterQuality: FilterQuality.high,
+                                              fit: BoxFit.cover,
+                                              image: NetworkImage(
+                                                '$imageUrl${rooms[index]['image'].first['image']}',
                                               ),
-                                              SizedBox(
-                                                width: AppWidthManager.w1,
-                                              ),
-                                              AppTextWidget(
-                                                text:
-                                                '(${rooms[index]['room']['capacity']} People)',
-                                                fontSize:
-                                                FontSizeManager.fs14,
-                                                fontWeight:
-                                                FontWeight.w600,
-                                                color: AppColorManager
-                                                    .textAppColor,
-                                              ),
-                                            ],
-                                          ),
-                                          Row(
-                                            children: [
-                                              SizedBox(
-                                                height:
-                                                AppHeightManager.h2,
-                                                width:
-                                                AppHeightManager.h2,
-                                                child: SvgPicture.asset(
-                                                    AppIconManager.star),
-                                              ),
-                                              AppTextWidget(
-                                                text:
-                                                '${rooms[index]['rate'] ??
-                                                    ""} star',
-                                                fontSize:
-                                                FontSizeManager.fs15,
-                                                fontWeight:
-                                                FontWeight.w800,
-                                                color: Colors.amber,
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                      Row(
-                                        mainAxisAlignment:
-                                        MainAxisAlignment.start,
-                                        children: [
-                                          AppTextWidget(
-                                            text: rooms[index]['room']
-                                            ['desc'],
-                                            fontSize:
-                                            FontSizeManager.fs15,
-                                            fontWeight: FontWeight.w600,
-                                            color:
-                                            AppColorManager.textGrey,
-                                            maxLines: 2,
-                                          ),
-                                          SizedBox(
-                                            width: AppWidthManager.w2,
-                                          ),
-                                          AppTextWidget(
-                                            text: rooms[index]['room']
-                                            ['price']
-                                                .toString(),
-                                            fontSize:
-                                            FontSizeManager.fs15,
-                                            fontWeight: FontWeight.w800,
-                                            color: AppColorManager
-                                                .textAppColor,
-                                          ),
-                                        ],
-                                      ),
-                                      SizedBox(
-                                        height: AppHeightManager.h1,
-                                      ),
-                                      Wrap(
-                                        children: List.generate(
-                                            rooms[index]['vnames']
-                                                .length >
-                                                2
-                                                ? 2
-                                                : rooms[index]['vnames']
-                                                .length, (i) {
-                                          return MainAppButton(
-                                            margin: EdgeInsets.only(
-                                                right:
-                                                AppWidthManager.w2),
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal:
-                                                AppWidthManager
-                                                    .w3Point8,
-                                                vertical:
-                                                AppHeightManager.h02),
-                                            color: AppColorManager
-                                                .greyWithOpacity6,
-                                            child: AppTextWidget(
-                                              text: rooms[index]['vnames']
-                                              [i]['name'] +
-                                                  ' view',
-                                              fontSize:
-                                              FontSizeManager.fs15,
-                                              fontWeight: FontWeight.w600,
-                                              color: AppColorManager
-                                                  .textGrey,
                                             ),
-                                          );
-                                        }),
+                                            borderRadius: BorderRadius.circular(
+                                                AppRadiusManager.r30)),
                                       ),
+                                      Padding(
+                                        padding: EdgeInsets.all(
+                                            AppWidthManager.w3Point8),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    AppTextWidget(
+                                                      text: rooms[index]['room']
+                                                          ['name'],
+                                                      fontSize:
+                                                          FontSizeManager.fs16,
+                                                      fontWeight:
+                                                          FontWeight.w700,
+                                                      color: AppColorManager
+                                                          .textAppColor,
+                                                    ),
+                                                    SizedBox(
+                                                      width: AppWidthManager.w1,
+                                                    ),
+                                                    AppTextWidget(
+                                                      text:
+                                                          '(${rooms[index]['room']['capacity']} People)',
+                                                      fontSize:
+                                                          FontSizeManager.fs14,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      color: AppColorManager
+                                                          .textAppColor,
+                                                    ),
+                                                  ],
+                                                ),
+                                                Row(
+                                                  children: [
+                                                    SizedBox(
+                                                      height:
+                                                          AppHeightManager.h2,
+                                                      width:
+                                                          AppHeightManager.h2,
+                                                      child: SvgPicture.asset(
+                                                          AppIconManager.star),
+                                                    ),
+                                                    AppTextWidget(
+                                                      text:
+                                                          '${rooms[index]['rate'] ?? ""} star',
+                                                      fontSize:
+                                                          FontSizeManager.fs15,
+                                                      fontWeight:
+                                                          FontWeight.w800,
+                                                      color: Colors.amber,
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              children: [
+                                                AppTextWidget(
+                                                  text: rooms[index]['room']
+                                                      ['desc'],
+                                                  fontSize:
+                                                      FontSizeManager.fs15,
+                                                  fontWeight: FontWeight.w600,
+                                                  color:
+                                                      AppColorManager.textGrey,
+                                                  maxLines: 2,
+                                                ),
+                                                SizedBox(
+                                                  width: AppWidthManager.w2,
+                                                ),
+                                                AppTextWidget(
+                                                  text: rooms[index]['room']
+                                                          ['price']
+                                                      .toString(),
+                                                  fontSize:
+                                                      FontSizeManager.fs15,
+                                                  fontWeight: FontWeight.w800,
+                                                  color: AppColorManager
+                                                      .textAppColor,
+                                                ),
+                                              ],
+                                            ),
+                                            SizedBox(
+                                              height: AppHeightManager.h1,
+                                            ),
+                                            Wrap(
+                                              children: List.generate(
+                                                  rooms[index]['vnames']
+                                                              .length >
+                                                          2
+                                                      ? 2
+                                                      : rooms[index]['vnames']
+                                                          .length, (i) {
+                                                return MainAppButton(
+                                                  margin: EdgeInsets.only(
+                                                      right:
+                                                          AppWidthManager.w2),
+                                                  padding: EdgeInsets.symmetric(
+                                                      horizontal:
+                                                          AppWidthManager
+                                                              .w3Point8,
+                                                      vertical:
+                                                          AppHeightManager.h02),
+                                                  color: AppColorManager
+                                                      .greyWithOpacity6,
+                                                  child: AppTextWidget(
+                                                    text: rooms[index]['vnames']
+                                                            [i]['name'] +
+                                                        ' view',
+                                                    fontSize:
+                                                        FontSizeManager.fs15,
+                                                    fontWeight: FontWeight.w600,
+                                                    color: AppColorManager
+                                                        .textGrey,
+                                                  ),
+                                                );
+                                              }),
+                                            ),
+                                          ],
+                                        ),
+                                      )
                                     ],
-                                  ),
-                                )
-                              ],
-                            )),
+                                  )),
+                            ),
+                          );
+                        },
                       ),
-                    );
-                  },
-                ),
               ),
             ],
           )
