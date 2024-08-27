@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
@@ -43,14 +44,17 @@ class _HomeScreenState extends State<HomeScreen> {
     });
     http.Response response =
         await HttpMethods().getMethod(ApiGetUrl.getMostPopularRooms);
-
     if (response.statusCode == 200) {
       setState(() {
         status = 1;
       });
 
+
+
       popularRooms = jsonDecode(response.body);
       popularRooms = filterRoomsBasedOnLocation(popularRooms, lat, long);
+
+      print(popularRooms);
     } else {
       setState(() {
         status = 2;
@@ -84,6 +88,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
       rooms = jsonDecode(response.body);
       rooms = filterRoomsBasedOnLocation(rooms, lat, long);
+
     } else {
       setState(() {
         statusRoom = 2;
@@ -122,35 +127,28 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   filterRoomsBasedOnLocation(data, lat, long) {
-    var newData = [];
-    print(data.length);
-    print(data[0]['hotel']);
-    print('00000000000000000000000000000000000');
-    // print(data);
     for (int i = 0; i < data.length; i++) {
-      print(data[i]);
-
-      for (int j = 0; j < data.length; j++) {
-
-          double temp1 = Geolocator.distanceBetween(
-            double.parse(lat), double.parse(long), data[i]['hotel']['lat'].toDouble() ?? 0.0, data[i]['hotel']['long'].toDouble()?? 0.0);
+      for (int j = i + 1; j < data.length ; j++) {
+        double temp1 = Geolocator.distanceBetween(
+            double.parse(lat),
+            double.parse(long),
+            data[i]['hotel']['lat'].toDouble() ?? 0.0,
+            data[i]['hotel']['long'].toDouble() ?? 0.0);
         double temp2 = Geolocator.distanceBetween(
-            double.parse(lat), double.parse(long), data[j]['hotel']['lat'].toDouble()?? 0.0, data[j]['hotel']['long'].toDouble()?? 0.0);
-
-        if (temp1 < temp2) {
-          newData.add(data[i]);
-        } else {
-          newData.add(data[j]);
+            double.parse(lat),
+            double.parse(long),
+            data[j]['hotel']['lat'].toDouble() ?? 0.0,
+            data[j]['hotel']['long'].toDouble() ?? 0.0);
+        if (temp1 > temp2) {
+         var temp = data[i];
+         data[i] = data[j];
+         data[j] = temp ;
         }
       }
     }
-    print(newData);
+    print(data);
     print('00000000000000000000000000000');
-    newData = newData.toSet().toList();
-    setState(() {
-
-    });
-    return newData;
+    return data;
   }
 
   Position? currentLocation;
@@ -162,6 +160,7 @@ class _HomeScreenState extends State<HomeScreen> {
     long = currentLocation?.longitude.toString();
     getPopularRooms();
     getRooms();
+
     setState(() {});
   }
 
